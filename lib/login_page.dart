@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(),
+                builder: (context) => const ChatPage(),
               ),
               (_) => false);
         }
@@ -111,12 +111,21 @@ class _LoginPageState extends State<LoginPage> {
               const SnackBar(content: Text('Something Went Wrong')));
         }
       }
+
+    }else{
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Empty text field')));
+      }
     }
-    if (mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Empty text field')));
-    }
+
     _isLoading = false;
     setState(() {});
+  }
+  @override
+  void dispose() {
+    _emailTEController.dispose();
+    _passwordTEController.dispose();
+    super.dispose();
   }
 }
