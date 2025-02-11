@@ -32,23 +32,23 @@ class _HomePageState extends State<HomePage> {
               );
             }),
           ),
-          Divider(color: Colors.grey.withOpacity(0.1),thickness: 10,),
+          Divider(color: Colors.grey.withOpacity(0.05),thickness: 10,),
           Expanded(
             flex: 6,
             child: ListView.separated(
                 itemCount: 20,
                 itemBuilder: (context,index){
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 24,
-                      ),
-                      title: Text('User Name'),
+                  return const ListTile(
+                    leading: CircleAvatar(
+                      radius: 24,
                     ),
+                    title: Text('User Name',style: TextStyle(fontWeight: FontWeight.w600),),
                   );
                 }, separatorBuilder: (BuildContext context, int index) {
-                  return Divider(color: Colors.grey.withOpacity(0.1));
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Divider(color: Colors.grey.withOpacity(0.05)),
+                  );
             },),
 
 
