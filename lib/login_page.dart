@@ -80,8 +80,8 @@ class _LoginPageState extends State<LoginPage> {
                                     builder: (context) => const SignupPage(),
                                   ),
                                   (_) => false);
-                            })
-                    ]))
+                            },),
+                    ],),),
               ],
             ),
           ),
