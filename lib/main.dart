@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_real_time_data/features/ui/splash_screen.dart';
 import 'package:firebase_real_time_data/firebase_options.dart';
-import 'package:firebase_real_time_data/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -19,12 +19,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.grey,
-        fixedSize: const Size.fromWidth(double.maxFinite),
+        backgroundColor: Colors.amber,
+        fixedSize: const Size(double.maxFinite,50),
         foregroundColor: Colors.black,
       ))),
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      home: const SplashScreen(),
     );
   }
 }
