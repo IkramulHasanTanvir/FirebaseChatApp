@@ -5,4 +5,6 @@ import 'package:flutter/material.dart';
   Colors.white,
   Colors.white,
   Colors.amber.withOpacity(0.1),
-], begin: Alignment.topCenter, end: Alignment.bottomCenter);
+],
+     begin: Alignment.topCenter, end: Alignment.bottomCenter
+);
