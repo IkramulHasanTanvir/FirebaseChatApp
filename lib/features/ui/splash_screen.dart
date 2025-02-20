@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
               children: [
                 const Spacer(),
                 SvgPicture.asset('assets/images/splash_logo.svg'),
-                const Text(
+                 const Text(
                   'Stay connected with your friends and family',
                   style: TextStyle(fontSize: 38, fontWeight: FontWeight.w700),
                 ),
