@@ -24,12 +24,35 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 24),
           // Recent chats / active users
           SizedBox(
             height: 90,
-            child: StreamBuilder<QuerySnapshot>(
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                //var userData = users[index].data() as Map<String, dynamic>;
+                return const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 32,
+                        backgroundImage: NetworkImage(''),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Unknown',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            /*StreamBuilder<QuerySnapshot>(
               stream: _firestore.collection('users').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -42,42 +65,38 @@ class _HomePageState extends State<HomePage> {
                   return const Center(child: Text("No users found"));
                 }
                 var users = snapshot.data!.docs;
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    var userData = users[index].data() as Map<String, dynamic>;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 32,
-                            backgroundImage: userData['profilePic'] != null
-                                ? NetworkImage(userData['profilePic'])
-                                : null,
-                            child: userData['profilePic'] == null
-                                ? const Icon(Icons.person, size: 32)
-                                : null,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            userData['name'] ?? 'Unknown',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
+                return
               },
-            ),
+            ),*/
           ),
           Divider(color: Colors.grey.withOpacity(0.2), thickness: 8),
 
           // All users list
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
+            child: ListView.separated(
+              itemCount: 10,
+              itemBuilder: (context, index) {
+               // var userData = users[index].data() as Map<String, dynamic>;
+                return ListTile(
+                  leading: const CircleAvatar(
+                    radius: 24,
+                    backgroundImage:NetworkImage(''),
+                    child:Icon(Icons.person)
+                  ),
+                  title: const Text('Unknown',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  onTap: () {
+                    // Navigate to chat screen
+                  },
+                );
+              },
+              separatorBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Divider(color: Colors.grey.withOpacity(0.2)),
+              ),
+            ),
+            /*StreamBuilder<QuerySnapshot>(
               stream: _firestore.collection('users').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -90,36 +109,9 @@ class _HomePageState extends State<HomePage> {
                   return const Center(child: Text("No chats available"));
                 }
                 var users = snapshot.data!.docs;
-                return ListView.separated(
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    var userData = users[index].data() as Map<String, dynamic>;
-                    return ListTile(
-                      leading: CircleAvatar(
-                        radius: 24,
-                        backgroundImage: userData['profilePic'] != null
-                            ? NetworkImage(userData['profilePic'])
-                            : null,
-                        child: userData['profilePic'] == null
-                            ? const Icon(Icons.person)
-                            : null,
-                      ),
-                      title: Text(
-                        userData['name'] ?? 'Unknown',
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      onTap: () {
-                        // Navigate to chat screen
-                      },
-                    );
-                  },
-                  separatorBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Divider(color: Colors.grey.withOpacity(0.2)),
-                  ),
-                );
+                return
               },
-            ),
+            ),*/
           ),
         ],
       ),
