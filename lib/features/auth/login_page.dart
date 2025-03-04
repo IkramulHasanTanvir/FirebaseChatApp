@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_real_time_data/common/constrants.dart';
 import 'package:firebase_real_time_data/common/custom_navigator.dart';
 import 'package:firebase_real_time_data/features/auth/signup_page.dart';
+import 'package:firebase_real_time_data/features/ui/forgot_pass_page.dart';
 import 'package:firebase_real_time_data/features/ui/home_page.dart';
 import 'package:firebase_real_time_data/firebase_services/firebase_services.dart';
 import 'package:flutter/gestures.dart';
@@ -25,9 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: background
-        ),
+        decoration: BoxDecoration(gradient: background),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -62,7 +61,20 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null;
                       }),
-                  const SizedBox(height: 44),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          customNavigator(context, const ForgotPassPage());
+
+                        },
+                        child: const Text('Forgot Password'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
                   if (_isLoading)
                     const CircularProgressIndicator()
                   else
@@ -70,19 +82,22 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: _onLogin, child: const Text('LOGIN')),
                   const SizedBox(height: 44),
                   RichText(
-                      text: TextSpan(
-                          style: const TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.w600),
-                          text: 'Registrar? ',
-                          children: [
+                    text: TextSpan(
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w600),
+                      text: 'Registrar? ',
+                      children: [
                         TextSpan(
-                            style: const TextStyle(color: Colors.blue),
-                            text: 'Sign Up',
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                customNavigator(context,const SignupPage());
-                              },),
-                      ],),),
+                          style: const TextStyle(color: Colors.blue),
+                          text: 'Sign Up',
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              customNavigator(context, const SignupPage());
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -100,8 +115,7 @@ class _LoginPageState extends State<LoginPage> {
           _emailTEController.text.trim(), _passwordTEController.text);
       if (user != null) {
         if (mounted) {
-          customNavigator(context,const HomePage());
-
+          customNavigator(context, const HomePage());
         }
       } else {
         if (mounted) {
@@ -109,8 +123,7 @@ class _LoginPageState extends State<LoginPage> {
               const SnackBar(content: Text('Something Went Wrong')));
         }
       }
-
-    }else{
+    } else {
       if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('Empty text field')));
@@ -120,6 +133,7 @@ class _LoginPageState extends State<LoginPage> {
     _isLoading = false;
     setState(() {});
   }
+
   @override
   void dispose() {
     _emailTEController.dispose();
