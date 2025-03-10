@@ -1,7 +1,9 @@
 import 'package:firebase_real_time_data/common/constrants.dart';
 import 'package:firebase_real_time_data/common/custom_navigator.dart';
+import 'package:firebase_real_time_data/common/widgets/custom_text_form_field.dart';
 import 'package:firebase_real_time_data/features/auth/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 class ChangePassPage extends StatefulWidget {
   const ChangePassPage({super.key});
@@ -11,8 +13,8 @@ class ChangePassPage extends StatefulWidget {
 }
 
 class _ChangePassPageState extends State<ChangePassPage> {
-  final TextEditingController _passwordTEController = TextEditingController();
-  final TextEditingController _newPassTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController(); // Controller for current password
+  final TextEditingController _newPassTEController = TextEditingController(); // Controller for new password
 
   @override
   Widget build(BuildContext context) {
@@ -30,30 +32,29 @@ class _ChangePassPageState extends State<ChangePassPage> {
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 44),
-              TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _passwordTEController,
-                  decoration: const InputDecoration(hintText: 'Password'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'This field cannot be empty';
-                    }
-                    return null;
-                  }),
+              CustomTextFormField(
+                controller: _passwordTEController,
+                hint: 'Current Password',
+                obscureText: true,
+                validator: LengthRangeValidator(
+                    min: 6,
+                    max: 12,
+                    errorText: 'Password must be 6-12 characters'),
+              ),
               const SizedBox(height: 16),
-              TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _newPassTEController,
-                  decoration: const InputDecoration(hintText: 'New Password'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'This field cannot be empty';
-                    }
-                    return null;
-                  }),
+              CustomTextFormField(
+                controller: _newPassTEController,
+                hint: 'New Password',
+                obscureText: true,
+                validator: LengthRangeValidator(
+                    min: 6,
+                    max: 12,
+                    errorText: 'Password must be 6-12 characters'),
+              ),
               const SizedBox(height: 44),
               ElevatedButton(
                   onPressed: () {
+                    // Add password change logic here before navigating
                     customNavigator(context, const LoginPage());
                   },
                   child: const Text('CONFIRM')),

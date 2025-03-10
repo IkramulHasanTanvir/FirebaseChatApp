@@ -1,12 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_real_time_data/common/constrants.dart';
-import 'package:firebase_real_time_data/common/custom_navigator.dart';
-import 'package:firebase_real_time_data/features/auth/login_page.dart';
-import 'package:firebase_real_time_data/features/ui/chats_page.dart';
-import 'package:firebase_real_time_data/firebase_services/firebase_services.dart';
+import 'package:firebase_real_time_data/common/widgets/custom_text_form_field.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+
+import '../../common/custom_navigator.dart';
+import '../../firebase_services/firebase_services.dart';
+import 'login_page.dart';
+import '../ui/chats_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -16,10 +17,10 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final TextEditingController _nameTEController = TextEditingController();
-  final TextEditingController _emailTEController = TextEditingController();
-  final TextEditingController _passwordTEController = TextEditingController();
-  final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
 
@@ -28,66 +29,62 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: background
+          gradient: background,
         ),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Form(
-              key: _globalKey,
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Create Account!',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+                  const Text('Create Account!',
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 40),
+                  CustomTextFormField(
+                      controller: _nameController,
+                      hint: 'Name',
+                      validator: RequiredValidator(errorText: 'Enter your name')),
+                  const SizedBox(height: 20),
+                  CustomTextFormField(
+                      controller: _emailController,
+                      hint: 'Email',
+                      validator:
+                          EmailValidator(errorText: 'Enter a valid email')),
+                  const SizedBox(height: 20),
+                  CustomTextFormField(
+                    controller: _passwordController,
+                    hint: 'Password',
+                    validator: LengthRangeValidator(
+                        min: 6,
+                        max: 12,
+                        errorText: 'Password must be 6-12 characters'),
+                    obscureText: true,
                   ),
-                  const SizedBox(height: 44),
-                  TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-
-                      keyboardType: TextInputType.text,
-                      controller: _nameTEController,
-                      decoration: const InputDecoration(hintText: 'Name'),
-                      validator: RequiredValidator(errorText: 'Enter your name').call,
-                  const SizedBox(height: 24),
-                  TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _emailTEController,
-                      decoration: const InputDecoration(hintText: 'Email'),
-                      validator: EmailValidator(errorText: 'Enter your valid Email').call),
-                  const SizedBox(height: 24),
-                  TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-
-                      controller: _passwordTEController,
-                      obscureText: true,
-                      decoration: const InputDecoration(hintText: 'password'),
-                      validator: LengthRangeValidator(min: 6, max: 12, errorText: 'Enter your password minimal 6').call),
-                  const SizedBox(height: 44),
-                  if (_isLoading)
-                    const CircularProgressIndicator()
-                  else
-                    ElevatedButton(
-                        onPressed: _onSignup, child: const Text('SIGN UP')),
-                  const SizedBox(height: 44),
+                  const SizedBox(height: 40),
+                  _isLoading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: _onSignup, child: const Text('SIGN UP')),
+                  const SizedBox(height: 30),
                   RichText(
-                      text: TextSpan(
-                          style: const TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.w600),
-                          text: 'Have account? ',
-                          children: [
+                    text: TextSpan(
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w600),
+                      text: 'Have an account? ',
+                      children: [
                         TextSpan(
-                            style: const TextStyle(color: Colors.blue),
-                            text: 'Login',
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                customNavigator(context,const LoginPage());
-
-                              })
-                      ]))
+                          text: 'Login',
+                          style: const TextStyle(color: Colors.amber),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap =
+                                () => customNavigator(context, const LoginPage()),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
@@ -97,33 +94,29 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  void _onSignup() async {
-    if (_globalKey.currentState!.validate()) {
-      _isLoading = true;
-      setState(() {});
-      User? user = await AuthServices.onSignup(
-          _emailTEController.text.trim(), _passwordTEController.text);
-      if (user != null) {
-        if (mounted) {
-          customNavigator(context,const ChatsPage());
+  Future<void> _onSignup() async {
+    if (!_formKey.currentState!.validate()) return;
 
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Something Went Wrong')));
-        }
+    setState(() => _isLoading = true);
+    try {
+      await AuthServices.onSignup(
+          _emailController.text.trim(), _passwordController.text.trim());
+      if (mounted) customNavigator(context, const ChatsPage());
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
       }
+    } finally {
+      setState(() => _isLoading = false);
     }
-    _isLoading = false;
-    setState(() {});
   }
 
   @override
   void dispose() {
-    _nameTEController.dispose();
-    _emailTEController.dispose();
-    _passwordTEController.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 }

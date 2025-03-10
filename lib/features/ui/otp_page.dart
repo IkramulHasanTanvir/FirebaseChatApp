@@ -30,19 +30,24 @@ class _OTPPageState extends State<OTPPage> {
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 44),
-              PinCodeTextField(
-                controller: _OTPTEController,
-                length: 6,
-                obscureText: false,
-                animationType: AnimationType.fade,
-                animationDuration: const Duration(milliseconds: 300),
-                appContext: context,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: PinCodeTextField(
+                  controller: _OTPTEController,
+                  length: 6,
+                  obscureText: false,
+                  animationType: AnimationType.fade,
+                  animationDuration: const Duration(milliseconds: 300),
+                  appContext: context,
+                ),
               ),
               const SizedBox(height: 44),
-              ElevatedButton(onPressed: () {
-                customNavigator(context, const ChangePassPage());
-
-              }, child: const Text('NEXT')),
+              ElevatedButton(
+                onPressed: () {
+                  customNavigator(context, const ChangePassPage());
+                },
+                child: const Text('NEXT'),
+              ),
             ],
           ),
         ),
