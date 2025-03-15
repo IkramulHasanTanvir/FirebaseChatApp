@@ -114,9 +114,11 @@ class _HomePageState extends State<HomePage> {
                   itemCount: users.length,
                   itemBuilder: (context, index) {
                     var userData = users[index].data() as Map<String, dynamic>;
+                    String chatPartnerName = userData['name'] ?? 'Unknown';
+                    String chatPartnerId = userData['uid'] ?? 'Unknown';
                     return GestureDetector(
                       onTap: (){
-                        customNavigatorPush(context, const ChatsPage(chatPartnerId: '', chatPartnerName: '',));
+                        customNavigatorPush(context,  ChatsPage(chatPartnerId: chatPartnerId, chatPartnerName: chatPartnerName,));
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),

@@ -19,8 +19,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _emailController = TextEditingController(text: 'tanvir@gmail.com');
+  final _passwordController = TextEditingController(text: '123456');
   final _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
@@ -105,13 +105,27 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() => _isLoading = true);
     try {
-      await AuthServices.onLogin(
-          _emailController.text.trim(), _passwordController.text.trim());
-      if (mounted) customNavigatorPushRemoveAll(context, const HomePage());
+      // Attempt login with email and password
+      final loginResult = await AuthServices.onLogin(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+
+      // Check if the login was successful
+      if (loginResult != null) {
+        // If login is successful, navigate to HomePage
+        if (mounted) {
+          customNavigatorPushRemoveAll(context, const HomePage());
+        }
+      } else {
+        throw Exception('Account does not exist or incorrect credentials');
+      }
     } catch (e) {
+      // If login fails, show an error message
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed: ${e.toString()}')),
+        );
       }
     } finally {
       setState(() => _isLoading = false);
