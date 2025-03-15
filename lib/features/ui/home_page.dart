@@ -4,6 +4,7 @@ import 'package:firebase_real_time_data/common/custom_navigator.dart';
 import 'package:firebase_real_time_data/features/auth/login_page.dart';
 import 'package:firebase_real_time_data/features/ui/chats_page.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -79,6 +80,8 @@ class _HomePageState extends State<HomePage> {
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
               onTap: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('isLoggedIn');
                 await _auth.signOut();
                 if (mounted) {
                   customNavigatorPushRemoveAll(context, const LoginPage());

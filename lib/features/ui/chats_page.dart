@@ -77,7 +77,9 @@ class _ChatsPageState extends State<ChatsPage> {
     final userEmail = _auth.currentUser?.email;
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.chatPartnerName), backgroundColor: Colors.amber),
+      appBar: AppBar(
+        titleSpacing: 0,
+          title: Text(widget.chatPartnerName), backgroundColor: Colors.amber),
       body: Column(
         children: [
           Expanded(

@@ -4,6 +4,7 @@ import 'package:firebase_real_time_data/features/ui/home_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/custom_navigator.dart';
 import '../../firebase_services/firebase_services.dart';
@@ -110,6 +111,9 @@ class _LoginPageState extends State<LoginPage> {
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
 
       // Check if the login was successful
       if (loginResult != null) {
