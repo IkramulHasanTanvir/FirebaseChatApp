@@ -1,5 +1,6 @@
 import 'package:firebase_real_time_data/common/constrants.dart';
 import 'package:firebase_real_time_data/common/widgets/custom_text_form_field.dart';
+import 'package:firebase_real_time_data/features/ui/home_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -106,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await AuthServices.onLogin(
           _emailController.text.trim(), _passwordController.text.trim());
-      if (mounted) customNavigatorPushRemoveAll(context, const ChatsPage());
+      if (mounted) customNavigatorPushRemoveAll(context, const HomePage());
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)

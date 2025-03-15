@@ -1,12 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_real_time_data/common/constrants.dart';
 import 'package:firebase_real_time_data/common/widgets/custom_text_form_field.dart';
+import 'package:firebase_real_time_data/features/ui/home_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import '../../common/custom_navigator.dart';
-import '../../firebase_services/firebase_services.dart';
 import 'login_page.dart';
-import '../ui/chats_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -20,8 +21,8 @@ class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
   bool _isLoading = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,8 @@ class _SignupPageState extends State<SignupPage> {
                   CustomTextFormField(
                       controller: _nameController,
                       hint: 'Name',
-                      validator: RequiredValidator(errorText: 'Enter your name')),
+                      validator:
+                          RequiredValidator(errorText: 'Enter your name')),
                   const SizedBox(height: 20),
                   CustomTextFormField(
                       controller: _emailController,
@@ -66,7 +68,9 @@ class _SignupPageState extends State<SignupPage> {
                   _isLoading
                       ? const CircularProgressIndicator()
                       : ElevatedButton(
-                          onPressed: _onSignup, child: const Text('SIGN UP')),
+                    onPressed: nextPage,
+                    child: const Text('SIGN UP'),
+                  ),
                   const SizedBox(height: 30),
                   RichText(
                     text: TextSpan(
@@ -78,8 +82,8 @@ class _SignupPageState extends State<SignupPage> {
                           text: 'Login',
                           style: const TextStyle(color: Colors.amber),
                           recognizer: TapGestureRecognizer()
-                            ..onTap =
-                                () => customNavigatorPushRemoveAll(context, const LoginPage()),
+                            ..onTap = () => customNavigatorPushRemoveAll(
+                                context, const LoginPage()),
                         ),
                       ],
                     ),
@@ -93,23 +97,48 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  Future<void> _onSignup() async {
+  void nextPage() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    setState(() => _isLoading = true); // 👈 Start loading
+
     try {
-      await AuthServices.onSignup(
-          _emailController.text.trim(), _passwordController.text.trim());
-      if (mounted) customNavigatorPushRemoveAll(context, const ChatsPage());
+      UserCredential userCredential =
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'uid': userCredential.user!.uid,
+        'name': _nameController.text.trim(),
+        'email': _emailController.text.trim(),
+        'createdAt': Timestamp.now(),
+      });
+
+      customNavigatorPushRemoveAll(
+        context,
+        const HomePage(),
+      );
+    } on FirebaseAuthException catch (e) {
+      _showError(e.message);
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
-      }
-    } finally {
-      setState(() => _isLoading = false);
+      _showError("An error occurred. Please try again.");
     }
+
+    setState(() => _isLoading = false); // 👈 Stop loading
   }
+
+  void _showError(String? message) {
+    setState(() => _isLoading = false); // 👈 Stop loading on error
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message ?? "An error occurred")),
+    );
+  }
+
 
   @override
   void dispose() {
