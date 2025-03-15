@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
 class ChangePassPage extends StatefulWidget {
-  const ChangePassPage({super.key});
+  const ChangePassPage({super.key,});
+
 
   @override
   State<ChangePassPage> createState() => _ChangePassPageState();
@@ -55,7 +56,7 @@ class _ChangePassPageState extends State<ChangePassPage> {
               ElevatedButton(
                   onPressed: () {
                     // Add password change logic here before navigating
-                    customNavigator(context, const LoginPage());
+                    customNavigatorPushRemoveAll(context, const LoginPage());
                   },
                   child: const Text('CONFIRM')),
             ],

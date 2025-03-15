@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () =>
-                          customNavigator(context, const ForgotPassPage()),
+                          customNavigatorPush(context, const ForgotPassPage()),
                       child: const Text('Forgot Password?',
                           style: TextStyle(color: Colors.amber)),
                     ),
@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: const TextStyle(color: Colors.amber),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () =>
-                                customNavigator(context, const SignupPage()),
+                                customNavigatorPush(context, const SignupPage()),
                         ),
                       ],
                     ),
@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await AuthServices.onLogin(
           _emailController.text.trim(), _passwordController.text.trim());
-      if (mounted) customNavigator(context, const ChatsPage());
+      if (mounted) customNavigatorPushRemoveAll(context, const ChatsPage());
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)

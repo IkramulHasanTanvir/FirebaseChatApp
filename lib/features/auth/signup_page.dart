@@ -3,7 +3,6 @@ import 'package:firebase_real_time_data/common/widgets/custom_text_form_field.da
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-
 import '../../common/custom_navigator.dart';
 import '../../firebase_services/firebase_services.dart';
 import 'login_page.dart';
@@ -80,7 +79,7 @@ class _SignupPageState extends State<SignupPage> {
                           style: const TextStyle(color: Colors.amber),
                           recognizer: TapGestureRecognizer()
                             ..onTap =
-                                () => customNavigator(context, const LoginPage()),
+                                () => customNavigatorPushRemoveAll(context, const LoginPage()),
                         ),
                       ],
                     ),
@@ -101,7 +100,7 @@ class _SignupPageState extends State<SignupPage> {
     try {
       await AuthServices.onSignup(
           _emailController.text.trim(), _passwordController.text.trim());
-      if (mounted) customNavigator(context, const ChatsPage());
+      if (mounted) customNavigatorPushRemoveAll(context, const ChatsPage());
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)

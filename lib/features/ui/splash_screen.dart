@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () {
-                    customNavigator(context, const LoginPage());
+                    customNavigatorPushRemoveAll(context, const LoginPage());
                   },
                   child: const Text('Start Messaging'),
                 ),
